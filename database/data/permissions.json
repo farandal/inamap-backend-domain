@@ -1,0 +1,698 @@
+[
+    {
+        "group": "inamaps",
+        "level": 2,
+        "labels": [
+            {
+                "name": "Inamap: getList",
+                "route_name": "api.inamaps.getList"
+            },
+            {
+                "name": "Inamap: getMany",
+                "route_name": "api.inamaps.getMany"
+            },
+            {
+                "name": "Inamap: getManyReference",
+                "route_name": "api.inamaps.getManyReference"
+            },
+            {
+                "name": "Inamap: getForSelect",
+                "route_name": "api.inamaps.getForSelect"
+            },
+            {
+                "name": "Inamap: deleteMany",
+                "route_name": "api.inamaps.deleteMany"
+            },
+            {
+                "name": "Inamap: audit",
+                "route_name": "api.inamaps.audit"
+            },
+            {
+                "name": "Inamap: auditAll",
+                "route_name": "api.inamaps.auditAll"
+            },
+            {
+                "name": "Inamap: update",
+                "route_name": "api.inamaps.update"
+            },
+            {
+                "name": "Inamap: partial",
+                "route_name": "api.inamaps.partial"
+            },
+            {
+                "name": "Inamap: postUpdate",
+                "route_name": "api.inamaps.postUpdate"
+            },
+            {
+                "name": "Inamap: updateMany",
+                "route_name": "api.inamaps.updateMany"
+            },
+            {
+                "name": "Inamap: getOne",
+                "route_name": "api.inamaps.getOne"
+            },
+            {
+                "name": "Inamap: create",
+                "route_name": "api.inamaps.create"
+            },
+            {
+                "name": "Inamap: putCreate",
+                "route_name": "api.inamaps.putCreate"
+            },
+            {
+                "name": "Inamap: delete",
+                "route_name": "api.inamaps.delete"
+            },
+            {
+                "name": "Inamap: postDelete",
+                "route_name": "api.inamaps.postDelete"
+            },
+            {
+                "name": "Inamap: filterValues",
+                "route_name": "api.inamaps.filterValues"
+            },
+            {
+                "name": "Inamap: filterValue",
+                "route_name": "api.inamaps.filterValue"
+            },
+            {
+                "name": "Inamap: interfaces",
+                "route_name": "api.inamaps.interfaces"
+            },
+            {
+                "name": "Inamap: publish",
+                "route_name": "api.inamaps.publish"
+            },
+            {
+                "name": "Inamap: unpublish",
+                "route_name": "api.inamaps.unpublish"
+            },
+            {
+                "name": "Inamap: accessKey.rotate",
+                "route_name": "api.inamaps.accessKey.rotate"
+            },
+            {
+                "name": "Inamap: connectivity",
+                "route_name": "api.inamaps.connectivity"
+            },
+            {
+                "name": "Inamap: route",
+                "route_name": "api.inamaps.route"
+            }
+        ]
+    },
+    {
+        "group": "inamap.layout",
+        "level": 2,
+        "labels": [
+            {
+                "name": "Layout: getList",
+                "route_name": "api.inamap.layout.getList"
+            },
+            {
+                "name": "Layout: getMany",
+                "route_name": "api.inamap.layout.getMany"
+            },
+            {
+                "name": "Layout: getManyReference",
+                "route_name": "api.inamap.layout.getManyReference"
+            },
+            {
+                "name": "Layout: getForSelect",
+                "route_name": "api.inamap.layout.getForSelect"
+            },
+            {
+                "name": "Layout: deleteMany",
+                "route_name": "api.inamap.layout.deleteMany"
+            },
+            {
+                "name": "Layout: audit",
+                "route_name": "api.inamap.layout.audit"
+            },
+            {
+                "name": "Layout: auditAll",
+                "route_name": "api.inamap.layout.auditAll"
+            },
+            {
+                "name": "Layout: update",
+                "route_name": "api.inamap.layout.update"
+            },
+            {
+                "name": "Layout: partial",
+                "route_name": "api.inamap.layout.partial"
+            },
+            {
+                "name": "Layout: postUpdate",
+                "route_name": "api.inamap.layout.postUpdate"
+            },
+            {
+                "name": "Layout: updateMany",
+                "route_name": "api.inamap.layout.updateMany"
+            },
+            {
+                "name": "Layout: getOne",
+                "route_name": "api.inamap.layout.getOne"
+            },
+            {
+                "name": "Layout: create",
+                "route_name": "api.inamap.layout.create"
+            },
+            {
+                "name": "Layout: putCreate",
+                "route_name": "api.inamap.layout.putCreate"
+            },
+            {
+                "name": "Layout: delete",
+                "route_name": "api.inamap.layout.delete"
+            },
+            {
+                "name": "Layout: postDelete",
+                "route_name": "api.inamap.layout.postDelete"
+            },
+            {
+                "name": "Layout: filterValues",
+                "route_name": "api.inamap.layout.filterValues"
+            },
+            {
+                "name": "Layout: filterValue",
+                "route_name": "api.inamap.layout.filterValue"
+            },
+            {
+                "name": "Layout: interfaces",
+                "route_name": "api.inamap.layout.interfaces"
+            },
+            {
+                "name": "Layout: geometry",
+                "route_name": "api.inamap.layout.geometry"
+            },
+            {
+                "name": "Layout: geometry.show",
+                "route_name": "api.inamap.layout.geometry.show"
+            },
+            {
+                "name": "Layout: image",
+                "route_name": "api.inamap.layout.image"
+            }
+        ]
+    },
+    {
+        "group": "inamap.zone",
+        "level": 2,
+        "labels": [
+            {
+                "name": "Zona: getList",
+                "route_name": "api.inamap.zone.getList"
+            },
+            {
+                "name": "Zona: getMany",
+                "route_name": "api.inamap.zone.getMany"
+            },
+            {
+                "name": "Zona: getManyReference",
+                "route_name": "api.inamap.zone.getManyReference"
+            },
+            {
+                "name": "Zona: getForSelect",
+                "route_name": "api.inamap.zone.getForSelect"
+            },
+            {
+                "name": "Zona: deleteMany",
+                "route_name": "api.inamap.zone.deleteMany"
+            },
+            {
+                "name": "Zona: audit",
+                "route_name": "api.inamap.zone.audit"
+            },
+            {
+                "name": "Zona: auditAll",
+                "route_name": "api.inamap.zone.auditAll"
+            },
+            {
+                "name": "Zona: update",
+                "route_name": "api.inamap.zone.update"
+            },
+            {
+                "name": "Zona: partial",
+                "route_name": "api.inamap.zone.partial"
+            },
+            {
+                "name": "Zona: postUpdate",
+                "route_name": "api.inamap.zone.postUpdate"
+            },
+            {
+                "name": "Zona: updateMany",
+                "route_name": "api.inamap.zone.updateMany"
+            },
+            {
+                "name": "Zona: getOne",
+                "route_name": "api.inamap.zone.getOne"
+            },
+            {
+                "name": "Zona: create",
+                "route_name": "api.inamap.zone.create"
+            },
+            {
+                "name": "Zona: putCreate",
+                "route_name": "api.inamap.zone.putCreate"
+            },
+            {
+                "name": "Zona: delete",
+                "route_name": "api.inamap.zone.delete"
+            },
+            {
+                "name": "Zona: postDelete",
+                "route_name": "api.inamap.zone.postDelete"
+            },
+            {
+                "name": "Zona: filterValues",
+                "route_name": "api.inamap.zone.filterValues"
+            },
+            {
+                "name": "Zona: filterValue",
+                "route_name": "api.inamap.zone.filterValue"
+            },
+            {
+                "name": "Zona: interfaces",
+                "route_name": "api.inamap.zone.interfaces"
+            }
+        ]
+    },
+    {
+        "group": "inamap.structure",
+        "level": 2,
+        "labels": [
+            {
+                "name": "Estructura: getList",
+                "route_name": "api.inamap.structure.getList"
+            },
+            {
+                "name": "Estructura: getMany",
+                "route_name": "api.inamap.structure.getMany"
+            },
+            {
+                "name": "Estructura: getManyReference",
+                "route_name": "api.inamap.structure.getManyReference"
+            },
+            {
+                "name": "Estructura: getForSelect",
+                "route_name": "api.inamap.structure.getForSelect"
+            },
+            {
+                "name": "Estructura: deleteMany",
+                "route_name": "api.inamap.structure.deleteMany"
+            },
+            {
+                "name": "Estructura: audit",
+                "route_name": "api.inamap.structure.audit"
+            },
+            {
+                "name": "Estructura: auditAll",
+                "route_name": "api.inamap.structure.auditAll"
+            },
+            {
+                "name": "Estructura: update",
+                "route_name": "api.inamap.structure.update"
+            },
+            {
+                "name": "Estructura: partial",
+                "route_name": "api.inamap.structure.partial"
+            },
+            {
+                "name": "Estructura: postUpdate",
+                "route_name": "api.inamap.structure.postUpdate"
+            },
+            {
+                "name": "Estructura: updateMany",
+                "route_name": "api.inamap.structure.updateMany"
+            },
+            {
+                "name": "Estructura: getOne",
+                "route_name": "api.inamap.structure.getOne"
+            },
+            {
+                "name": "Estructura: create",
+                "route_name": "api.inamap.structure.create"
+            },
+            {
+                "name": "Estructura: putCreate",
+                "route_name": "api.inamap.structure.putCreate"
+            },
+            {
+                "name": "Estructura: delete",
+                "route_name": "api.inamap.structure.delete"
+            },
+            {
+                "name": "Estructura: postDelete",
+                "route_name": "api.inamap.structure.postDelete"
+            },
+            {
+                "name": "Estructura: filterValues",
+                "route_name": "api.inamap.structure.filterValues"
+            },
+            {
+                "name": "Estructura: filterValue",
+                "route_name": "api.inamap.structure.filterValue"
+            },
+            {
+                "name": "Estructura: interfaces",
+                "route_name": "api.inamap.structure.interfaces"
+            }
+        ]
+    },
+    {
+        "group": "inamap.location",
+        "level": 2,
+        "labels": [
+            {
+                "name": "Ubicación: getList",
+                "route_name": "api.inamap.location.getList"
+            },
+            {
+                "name": "Ubicación: getMany",
+                "route_name": "api.inamap.location.getMany"
+            },
+            {
+                "name": "Ubicación: getManyReference",
+                "route_name": "api.inamap.location.getManyReference"
+            },
+            {
+                "name": "Ubicación: getForSelect",
+                "route_name": "api.inamap.location.getForSelect"
+            },
+            {
+                "name": "Ubicación: deleteMany",
+                "route_name": "api.inamap.location.deleteMany"
+            },
+            {
+                "name": "Ubicación: audit",
+                "route_name": "api.inamap.location.audit"
+            },
+            {
+                "name": "Ubicación: auditAll",
+                "route_name": "api.inamap.location.auditAll"
+            },
+            {
+                "name": "Ubicación: update",
+                "route_name": "api.inamap.location.update"
+            },
+            {
+                "name": "Ubicación: partial",
+                "route_name": "api.inamap.location.partial"
+            },
+            {
+                "name": "Ubicación: postUpdate",
+                "route_name": "api.inamap.location.postUpdate"
+            },
+            {
+                "name": "Ubicación: updateMany",
+                "route_name": "api.inamap.location.updateMany"
+            },
+            {
+                "name": "Ubicación: getOne",
+                "route_name": "api.inamap.location.getOne"
+            },
+            {
+                "name": "Ubicación: create",
+                "route_name": "api.inamap.location.create"
+            },
+            {
+                "name": "Ubicación: putCreate",
+                "route_name": "api.inamap.location.putCreate"
+            },
+            {
+                "name": "Ubicación: delete",
+                "route_name": "api.inamap.location.delete"
+            },
+            {
+                "name": "Ubicación: postDelete",
+                "route_name": "api.inamap.location.postDelete"
+            },
+            {
+                "name": "Ubicación: filterValues",
+                "route_name": "api.inamap.location.filterValues"
+            },
+            {
+                "name": "Ubicación: filterValue",
+                "route_name": "api.inamap.location.filterValue"
+            },
+            {
+                "name": "Ubicación: interfaces",
+                "route_name": "api.inamap.location.interfaces"
+            },
+            {
+                "name": "Ubicación: qr",
+                "route_name": "api.inamap.location.qr"
+            }
+        ]
+    },
+    {
+        "group": "inamap.path",
+        "level": 2,
+        "labels": [
+            {
+                "name": "Camino: getList",
+                "route_name": "api.inamap.path.getList"
+            },
+            {
+                "name": "Camino: getMany",
+                "route_name": "api.inamap.path.getMany"
+            },
+            {
+                "name": "Camino: getManyReference",
+                "route_name": "api.inamap.path.getManyReference"
+            },
+            {
+                "name": "Camino: getForSelect",
+                "route_name": "api.inamap.path.getForSelect"
+            },
+            {
+                "name": "Camino: deleteMany",
+                "route_name": "api.inamap.path.deleteMany"
+            },
+            {
+                "name": "Camino: audit",
+                "route_name": "api.inamap.path.audit"
+            },
+            {
+                "name": "Camino: auditAll",
+                "route_name": "api.inamap.path.auditAll"
+            },
+            {
+                "name": "Camino: update",
+                "route_name": "api.inamap.path.update"
+            },
+            {
+                "name": "Camino: partial",
+                "route_name": "api.inamap.path.partial"
+            },
+            {
+                "name": "Camino: postUpdate",
+                "route_name": "api.inamap.path.postUpdate"
+            },
+            {
+                "name": "Camino: updateMany",
+                "route_name": "api.inamap.path.updateMany"
+            },
+            {
+                "name": "Camino: getOne",
+                "route_name": "api.inamap.path.getOne"
+            },
+            {
+                "name": "Camino: create",
+                "route_name": "api.inamap.path.create"
+            },
+            {
+                "name": "Camino: putCreate",
+                "route_name": "api.inamap.path.putCreate"
+            },
+            {
+                "name": "Camino: delete",
+                "route_name": "api.inamap.path.delete"
+            },
+            {
+                "name": "Camino: postDelete",
+                "route_name": "api.inamap.path.postDelete"
+            },
+            {
+                "name": "Camino: filterValues",
+                "route_name": "api.inamap.path.filterValues"
+            },
+            {
+                "name": "Camino: filterValue",
+                "route_name": "api.inamap.path.filterValue"
+            },
+            {
+                "name": "Camino: interfaces",
+                "route_name": "api.inamap.path.interfaces"
+            }
+        ]
+    },
+    {
+        "group": "inamap.pathLink",
+        "level": 2,
+        "labels": [
+            {
+                "name": "Enlace de caminos: getList",
+                "route_name": "api.inamap.pathLink.getList"
+            },
+            {
+                "name": "Enlace de caminos: getMany",
+                "route_name": "api.inamap.pathLink.getMany"
+            },
+            {
+                "name": "Enlace de caminos: getManyReference",
+                "route_name": "api.inamap.pathLink.getManyReference"
+            },
+            {
+                "name": "Enlace de caminos: getForSelect",
+                "route_name": "api.inamap.pathLink.getForSelect"
+            },
+            {
+                "name": "Enlace de caminos: deleteMany",
+                "route_name": "api.inamap.pathLink.deleteMany"
+            },
+            {
+                "name": "Enlace de caminos: audit",
+                "route_name": "api.inamap.pathLink.audit"
+            },
+            {
+                "name": "Enlace de caminos: auditAll",
+                "route_name": "api.inamap.pathLink.auditAll"
+            },
+            {
+                "name": "Enlace de caminos: update",
+                "route_name": "api.inamap.pathLink.update"
+            },
+            {
+                "name": "Enlace de caminos: partial",
+                "route_name": "api.inamap.pathLink.partial"
+            },
+            {
+                "name": "Enlace de caminos: postUpdate",
+                "route_name": "api.inamap.pathLink.postUpdate"
+            },
+            {
+                "name": "Enlace de caminos: updateMany",
+                "route_name": "api.inamap.pathLink.updateMany"
+            },
+            {
+                "name": "Enlace de caminos: getOne",
+                "route_name": "api.inamap.pathLink.getOne"
+            },
+            {
+                "name": "Enlace de caminos: create",
+                "route_name": "api.inamap.pathLink.create"
+            },
+            {
+                "name": "Enlace de caminos: putCreate",
+                "route_name": "api.inamap.pathLink.putCreate"
+            },
+            {
+                "name": "Enlace de caminos: delete",
+                "route_name": "api.inamap.pathLink.delete"
+            },
+            {
+                "name": "Enlace de caminos: postDelete",
+                "route_name": "api.inamap.pathLink.postDelete"
+            },
+            {
+                "name": "Enlace de caminos: filterValues",
+                "route_name": "api.inamap.pathLink.filterValues"
+            },
+            {
+                "name": "Enlace de caminos: filterValue",
+                "route_name": "api.inamap.pathLink.filterValue"
+            },
+            {
+                "name": "Enlace de caminos: interfaces",
+                "route_name": "api.inamap.pathLink.interfaces"
+            }
+        ]
+    },
+    {
+        "group": "inamap.category",
+        "level": 2,
+        "labels": [
+            {
+                "name": "Categoría: getList",
+                "route_name": "api.inamap.category.getList"
+            },
+            {
+                "name": "Categoría: getMany",
+                "route_name": "api.inamap.category.getMany"
+            },
+            {
+                "name": "Categoría: getManyReference",
+                "route_name": "api.inamap.category.getManyReference"
+            },
+            {
+                "name": "Categoría: getForSelect",
+                "route_name": "api.inamap.category.getForSelect"
+            },
+            {
+                "name": "Categoría: deleteMany",
+                "route_name": "api.inamap.category.deleteMany"
+            },
+            {
+                "name": "Categoría: audit",
+                "route_name": "api.inamap.category.audit"
+            },
+            {
+                "name": "Categoría: auditAll",
+                "route_name": "api.inamap.category.auditAll"
+            },
+            {
+                "name": "Categoría: update",
+                "route_name": "api.inamap.category.update"
+            },
+            {
+                "name": "Categoría: partial",
+                "route_name": "api.inamap.category.partial"
+            },
+            {
+                "name": "Categoría: postUpdate",
+                "route_name": "api.inamap.category.postUpdate"
+            },
+            {
+                "name": "Categoría: updateMany",
+                "route_name": "api.inamap.category.updateMany"
+            },
+            {
+                "name": "Categoría: getOne",
+                "route_name": "api.inamap.category.getOne"
+            },
+            {
+                "name": "Categoría: create",
+                "route_name": "api.inamap.category.create"
+            },
+            {
+                "name": "Categoría: putCreate",
+                "route_name": "api.inamap.category.putCreate"
+            },
+            {
+                "name": "Categoría: delete",
+                "route_name": "api.inamap.category.delete"
+            },
+            {
+                "name": "Categoría: postDelete",
+                "route_name": "api.inamap.category.postDelete"
+            },
+            {
+                "name": "Categoría: filterValues",
+                "route_name": "api.inamap.category.filterValues"
+            },
+            {
+                "name": "Categoría: filterValue",
+                "route_name": "api.inamap.category.filterValue"
+            },
+            {
+                "name": "Categoría: interfaces",
+                "route_name": "api.inamap.category.interfaces"
+            },
+            {
+                "name": "Categoría: updateTree",
+                "route_name": "api.inamap.category.updateTree"
+            }
+        ]
+    }
+]
