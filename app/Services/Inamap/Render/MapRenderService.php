@@ -25,6 +25,9 @@ use Illuminate\Support\Facades\Storage;
  * spanning (0,0)-(width,height); the floor plan image, when there is one, is
  * stretched to that box exactly as the viewer draws it.
  *
+ * `places` (several `type:uuid` refs) marks each one with a numbered pin and
+ * draws no path: for "where are the toilets", not "how do I get there".
+ *
  * The route is ONE dashed line, the dash pattern running on through corners,
  * with no marker at its vertices.
  *
@@ -39,6 +42,7 @@ class MapRenderService
 {
     public const MIN_WIDTH = 240;
     public const MAX_WIDTH = 1600;
+    public const MAX_PLACES = 12;
 
     /** Caption font, shipped with the QR library already required. */
     private const FONT = 'vendor/endroid/qr-code/assets/open_sans.ttf';
@@ -56,18 +60,22 @@ class MapRenderService
     }
 
     /**
-     * @param  array{focus?: ?string, from?: ?string, to?: ?string, layout?: ?string, accessible?: bool, width?: int, lang?: ?string, qr?: bool}  $options
+     * @param  array{focus?: ?string, from?: ?string, to?: ?string, places?: string[], layout?: ?string, accessible?: bool, width?: int, lang?: ?string, qr?: bool}  $options
      * @return string PNG bytes
      *
      * @throws RouteException when a reference does not belong to this inamap
      */
     public function render(Inamap $inamap, array $options): string
     {
-        $focusRef = $options['focus'] ?? ($options['to'] ?? null);
-        $focus    = $focusRef ? $this->endpoints->resolve($inamap, $focusRef) : null;
-        $from     = !empty($options['from']) ? $this->endpoints->resolve($inamap, $options['from']) : null;
+        $placeRefs = array_slice(array_values(array_unique(array_filter((array) ($options['places'] ?? [])))), 0, self::MAX_PLACES);
+        $places    = array_map(fn (string $ref) => $this->endpoints->resolve($inamap, $ref), $placeRefs);
 
-        $layout = $this->layoutFor($inamap, $options['layout'] ?? null, $focus);
+        // Several places and no route: a set of locations, not a way to one.
+        $focusRef = $places === [] ? ($options['focus'] ?? ($options['to'] ?? null)) : null;
+        $focus    = $focusRef ? $this->endpoints->resolve($inamap, $focusRef) : null;
+        $from     = $places === [] && !empty($options['from']) ? $this->endpoints->resolve($inamap, $options['from']) : null;
+
+        $layout = $this->layoutFor($inamap, $options['layout'] ?? null, $focus ?? ($places[0] ?? null));
         $width  = max(self::MIN_WIDTH, min(self::MAX_WIDTH, (int) ($options['width'] ?? 900)));
         $scale  = $width / max(1e-6, (float) $layout->width);
         $mapHeight = max(1, (int) round((float) $layout->height * $scale));
@@ -81,6 +89,7 @@ class MapRenderService
                 $hasRoute ? $options['from'] : null,
                 $accessible,
                 (string) ($options['lang'] ?? 'es'),
+                $placeRefs,
             )
             : null;
         $band   = $qrUrl ? $this->bandMetrics($width) : null;
@@ -99,6 +108,9 @@ class MapRenderService
             $this->dashedRoute($img, $this->joinSteps($route['steps'] ?? [], $layout->id, $toPx), max(3, (int) round($width / 150)));
         }
 
+        foreach ($places as $i => $place) {
+            $this->drawNumbered($img, $place, $layout, $toPx, $i + 1, max(3, (int) round($width / 150)));
+        }
         if ($focus) {
             $this->drawEndpoint($img, $focus, $layout, $toPx, [225, 37, 27]);
         }
@@ -162,6 +174,40 @@ class MapRenderService
                     imagefilledpolygon($img, array_merge(...$points), imagecolorallocatealpha($img, $r, $g, $b, $alpha));
                 }
             }
+        }
+    }
+
+    /** One of several places: its outline when it is an area, and a numbered disc at its centre. */
+    private function drawNumbered(\GdImage $img, array $endpoint, Layout $layout, callable $toPx, int $number, int $unit): void
+    {
+        if (($endpoint['layout_id'] ?? null) !== $layout->id) {
+            return;
+        }
+
+        if (!empty($endpoint['polygon'])) {
+            $points = array_map($toPx, $endpoint['polygon']);
+            if (count($points) >= 3) {
+                imagefilledpolygon($img, array_merge(...$points), imagecolorallocatealpha($img, 225, 37, 27, 85));
+                $this->polyline($img, [...$points, $points[0]], 3, [225, 37, 27]);
+            }
+            [$x, $y] = $toPx($this->polygons->interiorPoint($endpoint['polygon']) ?? $this->polygons->centroid($endpoint['polygon']));
+        } else {
+            [$x, $y] = $toPx($endpoint['point'] ?? [0, 0]);
+        }
+
+        $outer = $unit * 6;
+        imageantialias($img, false);
+        imagefilledellipse($img, $x, $y, $outer + 6, $outer + 6, imagecolorallocate($img, 255, 255, 255));
+        imagefilledellipse($img, $x, $y, $outer, $outer, imagecolorallocate($img, 225, 37, 27));
+        imageantialias($img, true);
+
+        $font = base_path(self::FONT);
+        if (is_file($font) && function_exists('imagettftext')) {
+            $size = max(9, (int) round($outer * 0.52));
+            $box  = imagettfbbox($size, 0, $font, (string) $number);
+            $w    = $box[2] - $box[0];
+            $h    = $box[1] - $box[7];
+            imagettftext($img, $size, 0, (int) round($x - $w / 2 - $box[0]), (int) round($y + $h / 2 - $box[1]), imagecolorallocate($img, 255, 255, 255), $font, (string) $number);
         }
     }
 
@@ -294,9 +340,12 @@ class MapRenderService
     }
 
     /** Where a phone opens this same place and route in the interactive viewer. */
-    private function phoneUrl(string $base, ?string $to, ?string $from, bool $accessible, string $lang): string
+    private function phoneUrl(string $base, ?string $to, ?string $from, bool $accessible, string $lang, array $places = []): string
     {
         $query = array_filter([
+            // One letter for the type (l, s, z) instead of the word: a long set
+            // of places must stay a short enough link for a QR code.
+            'places'     => $places === [] ? null : implode(',', array_map([$this, 'compactRef'], $places)),
             'to'         => $to,
             'from'       => $to ? $from : null,
             'accessible' => $to && $from && $accessible ? 1 : null,
@@ -304,6 +353,14 @@ class MapRenderService
         ]);
 
         return $query === [] ? $base : $base . '?' . http_build_query($query);
+    }
+
+    /** `location:uuid` -> `l:uuid` (the viewer expands it back). */
+    private function compactRef(string $ref): string
+    {
+        [$type, $id] = array_pad(explode(':', $ref, 2), 2, null);
+
+        return in_array($type, ['location', 'structure', 'zone'], true) && $id ? $type[0] . ':' . $id : $ref;
     }
 
     /** @return array{qr: int, pad: int, height: int} */
@@ -322,7 +379,7 @@ class MapRenderService
         imagefilledrectangle($img, 0, $top, $width, $top + $bandHeight, imagecolorallocate($img, 255, 255, 255));
         imageline($img, 0, $top, $width, $top, imagecolorallocate($img, 214, 214, 210));
 
-        $png = imagecreatefromstring(app(QrService::class)->render($url, 'png', $side)['content']);
+        $png = imagecreatefromstring(app(QrService::class)->render($url, 'png', $side, compact: true)['content']);
         if ($png) {
             imagecopyresampled($img, $png, $width - $pad - $side, $top + $pad, 0, 0, $side, $side, imagesx($png), imagesy($png));
             imagedestroy($png);

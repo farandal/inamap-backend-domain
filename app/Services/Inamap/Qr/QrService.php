@@ -15,9 +15,20 @@ class QrService
     public const FORMATS = ['svg', 'png'];
 
     /** @return array{content: string, mime: string} */
-    public function render(string $data, string $format = 'svg', int $size = 320): array
+    /**
+     * @param  bool  $compact  lowest error correction: fewer modules for the same
+     *                         text, which is what a long link needs to stay
+     *                         scannable at a small size on a screen (a printed or
+     *                         scuffed code would want the default).
+     */
+    public function render(string $data, string $format = 'svg', int $size = 320, bool $compact = false): array
     {
-        $qr = new QrCode(data: $data, errorCorrectionLevel: ErrorCorrectionLevel::Medium, size: $size, margin: 12);
+        $qr = new QrCode(
+            data: $data,
+            errorCorrectionLevel: $compact ? ErrorCorrectionLevel::Low : ErrorCorrectionLevel::Medium,
+            size: $size,
+            margin: 12,
+        );
 
         if ($format === 'png') {
             return ['content' => (new PngWriter())->write($qr)->getString(), 'mime' => 'image/png'];
