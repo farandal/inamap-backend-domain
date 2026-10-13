@@ -49,7 +49,14 @@ class LocationSearchService
 
         foreach ($types as $type) {
             $table = self::SOURCES[$type];
-            $categoryColumn = $type === 'location' ? 'category_id' : 'NULL';
+            // Cast both branches to text: on PostgreSQL a bare NULL is typed text
+            // while category_id is uuid, and the UNION of the three tables then
+            // fails ("UNION types text and uuid cannot be matched") for any query
+            // that matches more than one kind of place. The value is a uuid
+            // string either way.
+            $categoryColumn = $type === 'location'
+                ? ($pgsql ? 'CAST(category_id AS TEXT)' : 'category_id')
+                : ($pgsql ? 'CAST(NULL AS TEXT)' : 'NULL');
             $score = $term === ''
                 ? '1.0'
                 : ($pgsql ? 'GREATEST(word_similarity(?, search_text), CASE WHEN search_text LIKE ? THEN 1.0 ELSE 0 END)' : 'CASE WHEN search_text LIKE ? THEN 1.0 ELSE 0 END');
