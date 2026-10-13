@@ -38,8 +38,8 @@ class PublicInamapController extends Controller
                 'access_mode', 'initial_layout_id', 'initial_zoom', 'primary_color',
             ])),
             'layouts'     => $inamap->layouts->map(fn ($l) => $l->only(['id', 'name', 'level', 'width', 'height', 'image_url']))->values(),
-            'zones'       => $inamap->zones->map(fn ($z) => $z->only(['id', 'layout_id', 'code', 'label', 'color', 'polygon']))->values(),
-            'structures'  => $inamap->structures->map(fn ($s) => $s->only(['id', 'layout_id', 'code', 'label', 'color', 'polygon']))->values(),
+            'zones'       => $inamap->zones->map(fn ($z) => $z->only(['id', 'layout_id', 'code', 'label', 'terms', 'color', 'polygon']))->values(),
+            'structures'  => $inamap->structures->map(fn ($s) => $s->only(['id', 'layout_id', 'code', 'label', 'terms', 'color', 'polygon']))->values(),
             'locations'   => LocationResource::collection($inamap->locations)->resolve($request),
             'categories'  => Category::query()
                 ->whereIn('id', $inamap->locations->pluck('category_id')->filter()->unique())
@@ -80,6 +80,8 @@ class PublicInamapController extends Controller
             'to'     => 'nullable|string|max:80',
             'layout' => 'nullable|uuid',
             'w'      => 'nullable|integer|min:' . MapRenderService::MIN_WIDTH . '|max:' . MapRenderService::MAX_WIDTH,
+            'lang'   => 'nullable|in:es,en',
+            'qr'     => 'nullable|boolean',
         ]);
 
         /** @var Inamap $inamap */
@@ -91,6 +93,9 @@ class PublicInamapController extends Controller
             'layout'     => $request->query('layout'),
             'accessible' => $request->boolean('accessible'),
             'width'      => (int) $request->query('w', 900),
+            'lang'       => $request->query('lang', 'es'),
+            // On unless asked off (qr=0): a picture shown on a kiosk is where the phone code is most useful.
+            'qr'         => $request->query('qr') === null ? true : $request->boolean('qr'),
         ];
 
         $key = 'inamap:render:' . $inamap->id . ':' . md5(json_encode($options) . '|' . $inamap->updated_at . '|' . $inamap->layouts()->max('updated_at'));
