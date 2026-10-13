@@ -22,6 +22,7 @@ Route::prefix('inamap')->name('inamap.public.')->group(function () {
         Route::get('search', [PublicInamapController::class, 'search'])->name('search');
         Route::get('route', [PublicInamapController::class, 'route'])->name('route');
         Route::get('{id}', [PublicInamapController::class, 'show'])->whereUuid('id')->name('show');
+        Route::get('{id}/render', [PublicInamapController::class, 'render'])->whereUuid('id')->name('render');
         Route::get('{id}/locations/{locationId}', [PublicInamapController::class, 'location'])
             ->whereUuid('id')->whereUuid('locationId')->name('location');
     });

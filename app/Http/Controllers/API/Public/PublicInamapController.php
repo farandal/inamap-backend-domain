@@ -10,6 +10,7 @@ use Domain\App\Models\Inamap\Category;
 use Domain\App\Models\Inamap\Inamap;
 use Domain\App\Models\Inamap\Location;
 use Domain\App\Models\Inamap\PathLink;
+use Domain\App\Services\Inamap\Render\MapRenderService;
 use Domain\App\Services\Inamap\Routing\RouteException;
 use Domain\App\Services\Inamap\Routing\RouteService;
 use Domain\App\Services\Inamap\Search\LocationSearchService;
@@ -62,6 +63,48 @@ class PublicInamapController extends Controller
         $response->isNotModified($request);
 
         return $response;
+    }
+
+    /**
+     * GET api/inamap/{id}/render?focus=type:uuid&from=type:uuid&to=type:uuid&layout=&accessible=&w=
+     *
+     * Imagen PNG de un piso con el lugar resaltado y, con `from`, la ruta hasta
+     * él. Para pantallas que no corren el visor interactivo (tarjetas de kiosco).
+     * Solo referencias: toda coordenada sale del propio inamap.
+     */
+    public function render(Request $request, string $id)
+    {
+        $request->validate([
+            'focus'  => 'nullable|string|max:80',
+            'from'   => 'nullable|string|max:80',
+            'to'     => 'nullable|string|max:80',
+            'layout' => 'nullable|uuid',
+            'w'      => 'nullable|integer|min:' . MapRenderService::MIN_WIDTH . '|max:' . MapRenderService::MAX_WIDTH,
+        ]);
+
+        /** @var Inamap $inamap */
+        $inamap = $request->attributes->get('inamap');
+        $options = [
+            'focus'      => $request->query('focus'),
+            'from'       => $request->query('from'),
+            'to'         => $request->query('to'),
+            'layout'     => $request->query('layout'),
+            'accessible' => $request->boolean('accessible'),
+            'width'      => (int) $request->query('w', 900),
+        ];
+
+        $key = 'inamap:render:' . $inamap->id . ':' . md5(json_encode($options) . '|' . $inamap->updated_at . '|' . $inamap->layouts()->max('updated_at'));
+
+        try {
+            $png = cache()->remember($key, now()->addMinutes(10), fn () => base64_encode(app(MapRenderService::class)->render($inamap, $options)));
+        } catch (RouteException $e) {
+            return InamapAccessToken::error($e->errorCode, $e->httpStatus());
+        }
+
+        return response(base64_decode($png), 200, [
+            'Content-Type'  => 'image/png',
+            'Cache-Control' => $inamap->requiresToken() ? 'private, max-age=300' : 'public, max-age=300',
+        ]);
     }
 
     /** GET api/inamap/{id}/locations/{locationId} — ficha de una ubicación. */
