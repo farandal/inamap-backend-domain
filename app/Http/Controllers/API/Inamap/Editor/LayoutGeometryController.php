@@ -83,7 +83,9 @@ class LayoutGeometryController extends Controller
             $removed = array_diff($existing['zones'], array_filter(array_column($payload['zones'], 'id')));
             // Al reemplazar la colección completa, las zonas existentes no
             // enviadas se eliminan y no cuentan para el solapamiento.
-            foreach ($validator->zoneConflicts($layout, $payload['zones'], array_values($removed)) as $index => $conflicts) {
+            // Con settings.allow_zone_overlap del inamap (apagado por defecto) no hay conflicto de zonas.
+            $zoneConflicts = $layout->inamap?->allowsZoneOverlap() ? [] : $validator->zoneConflicts($layout, $payload['zones'], array_values($removed));
+            foreach ($zoneConflicts as $index => $conflicts) {
                 $errors["zones.{$index}.polygon"] = __('inamap.errors.zone_overlap', [
                     'zones' => implode(', ', array_filter(array_column($conflicts, 'label'))),
                 ]);

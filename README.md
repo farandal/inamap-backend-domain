@@ -589,7 +589,7 @@ flowchart TD
 - **Render:** SVG (suficiente para polígonos/polilíneas de este volumen; animación de ruta trivial). Decisión revisable si se superan ~5 000 elementos por layout.
 - **Capas (z-order):** imagen de fondo → zonas (translúcidas) → estructuras (sólidas) → caminos → ubicaciones → ruta calculada.
 - **Herramientas:** *Zona* y *Estructura* (dibujo de polígono, edición de vértices, color y etiqueta), *Ubicación* (clic sobre el plano, ícono, metadata), *Camino* (polilínea, sentido), *Enlace* (arrastrar entre extremos; línea punteada; para enlaces verticales, selector de layout destino y de **tipo**: ascensor, rampa, escalera, escalera mecánica), *Medir* (en la unidad del inamap).
-- **Validación en vivo:** el solapamiento de zonas se resalta en rojo (bloquea); estructura-estructura se resalta en ámbar (advertencia). La validación **autoritativa** es la del servidor (422).
+- **Validación en vivo:** el solapamiento de zonas se resalta en rojo (bloquea, salvo que el inamap tenga habilitado `settings.allow_zone_overlap`); estructura-estructura se resalta en ámbar (advertencia). La validación **autoritativa** es la del servidor (422).
 - **Estado:** el editor trabaja sobre un documento de layout en memoria con deshacer/rehacer; el guardado es atómico (§9).
 - **Diagnóstico:** botón "Verificar conectividad" muestra ubicaciones inalcanzables y caminos sueltos.
 
@@ -703,7 +703,7 @@ Producción replicará el patrón de CDK del framework (ECS Fargate + ALB + RDS 
 | ID | Requerimiento |
 |---|---|
 | RF-05 | El sistema debe permitir administrar **zonas**: polígonos sobre el layout con color, etiqueta y código. |
-| RF-06 | Las zonas **no pueden solaparse** dentro del mismo layout (borde compartido permitido). |
+| RF-06 | Las zonas **no pueden solaparse** dentro del mismo layout (borde compartido permitido), salvo que el inamap lo habilite con `settings.allow_zone_overlap` (apagado por defecto). |
 | RF-07 | El sistema debe permitir administrar **estructuras**: polígonos de superficie sólida con color, etiqueta y código (edificios, pabellones). Pueden solaparse con zonas; el solapamiento entre estructuras emite **advertencia no bloqueante**. |
 | RF-08 | Una estructura puede **contener ubicaciones**. |
 | RF-09 | El sistema debe permitir administrar **ubicaciones**: punto en el plano con etiqueta, código, ícono, categoría, metadata y **código QR** que enlaza a un sitio web. |
@@ -773,7 +773,7 @@ Producción replicará el patrón de CDK del framework (ECS Fargate + ALB + RDS 
 |---|---|---|
 | HU-EDI-01 | Como editor quiero subir la imagen de fondo de un layout. | Se acepta JPG/PNG/WebP con tamaño máx.; se previsualiza; se puede reemplazar sin perder geometría. |
 | HU-EDI-02 | Como editor quiero dibujar zonas con color y etiqueta. | El polígono se cierra con ≥ 3 vértices; editable; color y código persistentes. |
-| HU-EDI-03 | Como editor quiero que el sistema impida zonas solapadas. | Al solapar, se resalta y el guardado devuelve 422 con las zonas en conflicto. |
+| HU-EDI-03 | Como editor quiero que el sistema impida zonas solapadas. | Por defecto, al solapar se resalta y el guardado devuelve 422 con las zonas en conflicto. Si el inamap habilita `allow_zone_overlap`, no se resalta ni se rechaza. |
 | HU-EDI-04 | Como editor quiero dibujar estructuras sólidas. | Igual que zonas, con relleno sólido y color; pueden cruzarse con zonas; el cruce entre estructuras muestra advertencia no bloqueante. |
 | HU-EDI-05 | Como editor quiero insertar ubicaciones con clic en el plano. | Aparece ícono; el panel derecho edita etiqueta, código, categoría, ícono, términos y URL. |
 | HU-EDI-06 | Como editor quiero asignar una ubicación a una estructura. | Selector de estructura; filtra por layout. |
@@ -898,7 +898,7 @@ erDiagram
         string unit "m en v1"
         string status "draft | published"
         timestamp published_at
-        json settings "access_mode, session_ttl_minutes, access_key_hash, marca, centro, zoom"
+        json settings "access_mode, session_ttl_minutes, access_key_hash, allow_zone_overlap, marca, centro, zoom"
         boolean active
     }
     LAYOUT {
@@ -1046,7 +1046,7 @@ erDiagram
 
 | Regla | Dónde se aplica |
 |---|---|
-| Zonas de un mismo layout no se solapan (borde compartido permitido) | `NoZoneOverlap` en request + guardado atómico |
+| Zonas de un mismo layout no se solapan (borde compartido permitido), salvo `settings.allow_zone_overlap` del inamap (apagado por defecto) | `GeometryValidator::zoneConflicts()` en `PolygonController` y `LayoutGeometryController` (guardado atómico); se omite si `Inamap::allowsZoneOverlap()` |
 | Estructura↔zona puede solaparse; estructura↔estructura solo advierte | `PolygonService` → advertencias en la respuesta de guardado |
 | Polígonos simples y con ≥ 3 vértices; caminos con ≥ 2 | `PolygonIsSimple` / validación de longitud |
 | Geometría dentro de `[0,width]×[0,height]` | `PointInsideLayout` (advertencia si el layout cambia de tamaño) |

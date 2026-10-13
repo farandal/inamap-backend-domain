@@ -58,8 +58,11 @@ abstract class PolygonController extends InamapBaseController
         $candidate = ['x' => ['id' => $id, 'label' => $data['label'] ?? null, 'polygon' => $data['polygon'] ?? []]];
         $warnings = [];
 
+        // Las zonas solapadas se rechazan salvo que el inamap lo permita en su configuración
+        // (settings.allow_zone_overlap, apagado por defecto).
         if ($this->overlapIsError) {
-            if ($conflicts = $validator->zoneConflicts($layout, $candidate)['x'] ?? []) {
+            $conflicts = $this->zoneOverlapAllowed($layout) ? [] : ($validator->zoneConflicts($layout, $candidate)['x'] ?? []);
+            if ($conflicts) {
                 throw ValidationException::withMessages([
                     'polygon' => __('inamap.errors.zone_overlap', ['zones' => implode(', ', array_column($conflicts, 'label'))]),
                 ]);
@@ -73,5 +76,10 @@ abstract class PolygonController extends InamapBaseController
         }
 
         return $warnings;
+    }
+
+    private function zoneOverlapAllowed(Layout $layout): bool
+    {
+        return (bool) $layout->inamap?->allowsZoneOverlap();
     }
 }

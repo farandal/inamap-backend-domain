@@ -85,6 +85,16 @@ class Inamap extends InamapModel
         return max(1, min($ttl, (int) config('inamap.route_sessions.max_ttl_minutes')));
     }
 
+    /**
+     * ¿Se permiten zonas solapadas en este inamap? Apagado por defecto: la regla RF-06
+     * (zonas disjuntas, error 422) rige salvo que el inamap lo habilite en su
+     * configuración (`settings.allow_zone_overlap`).
+     */
+    public function allowsZoneOverlap(): bool
+    {
+        return filter_var($this->settings['allow_zone_overlap'] ?? false, FILTER_VALIDATE_BOOLEAN);
+    }
+
     public function accessKeyHash(): ?string
     {
         return $this->settings['access_key_hash'] ?? null;
@@ -98,6 +108,7 @@ class Inamap extends InamapModel
         $settings['access_mode'] = $this->accessMode();
         $settings['session_ttl_minutes'] = $this->sessionTtlMinutes();
         $settings['has_access_key'] = $this->accessKeyHash() !== null;
+        $settings['allow_zone_overlap'] = $this->allowsZoneOverlap();
 
         return $settings;
     }

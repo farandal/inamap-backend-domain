@@ -18,6 +18,29 @@ class InamapCrudTest extends TestCase
     }
 
     #[Test]
+    public function zone_overlap_is_off_by_default_and_the_setting_is_saved_and_validated(): void
+    {
+        [$user, $tenant] = $this->tenantUser('Tenant');
+
+        $id = $this->actingAs($user)->postJson('/api/inamaps', ['name' => 'Campus'])
+            ->assertCreated()->assertJsonPath('data.settings.allow_zone_overlap', false)->json('data.id');
+
+        $this->actingAs($user)->putJson("/api/inamaps/{$id}", ['settings' => ['allow_zone_overlap' => true]])
+            ->assertOk()->assertJsonPath('data.settings.allow_zone_overlap', true);
+        $this->assertTrue(Inamap::find($id)->allowsZoneOverlap());
+
+        // Another setting later never switches it back off (omission does not erase).
+        $this->actingAs($user)->putJson("/api/inamaps/{$id}", ['settings' => ['primary_color' => '#112233']])
+            ->assertOk()->assertJsonPath('data.settings.allow_zone_overlap', true);
+
+        $this->actingAs($user)->putJson("/api/inamaps/{$id}", ['settings' => ['allow_zone_overlap' => 'maybe']])
+            ->assertUnprocessable();
+
+        $this->actingAs($user)->putJson("/api/inamaps/{$id}", ['settings' => ['allow_zone_overlap' => false]])
+            ->assertOk()->assertJsonPath('data.settings.allow_zone_overlap', false);
+    }
+
+    #[Test]
     public function a_tenant_admin_creates_an_inamap_in_their_own_tenant(): void
     {
         [$user, $tenant] = $this->tenantUser('Tenant');

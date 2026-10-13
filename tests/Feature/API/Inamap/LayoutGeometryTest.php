@@ -38,6 +38,55 @@ class LayoutGeometryTest extends TestCase
     }
 
     #[Test]
+    public function an_inamap_that_allows_zone_overlap_accepts_overlapping_zones(): void
+    {
+        [$user, $tenant] = $this->tenantUser('Tenant');
+        $layout = $this->makeLayout($this->makeInamap($tenant, ['settings' => ['allow_zone_overlap' => true]]));
+
+        $this->actingAs($user)->postJson('/api/inamap/zones', [
+            'layout_id' => $layout->id, 'label' => 'A', 'polygon' => $this->square(0, 0, 10),
+        ])->assertCreated();
+
+        // The same shape that is a 422 by default.
+        $this->actingAs($user)->postJson('/api/inamap/zones', [
+            'layout_id' => $layout->id, 'label' => 'C', 'polygon' => $this->square(5, 5, 10),
+        ])->assertCreated();
+
+        $this->assertSame(2, Zone::where('layout_id', $layout->id)->count());
+    }
+
+    #[Test]
+    public function an_inamap_that_allows_zone_overlap_saves_overlapping_zones_in_the_geometry_document(): void
+    {
+        [$user, $tenant] = $this->tenantUser('Tenant');
+        $layout = $this->makeLayout($this->makeInamap($tenant, ['settings' => ['allow_zone_overlap' => true]]));
+
+        $this->actingAs($user)->putJson("/api/inamap/layouts/{$layout->id}/geometry", [
+            'zones' => [
+                ['client_id' => 'a', 'label' => 'A', 'polygon' => $this->square(0, 0, 10)],
+                ['client_id' => 'b', 'label' => 'B', 'polygon' => $this->square(5, 5, 10)],
+            ],
+        ])->assertOk();
+
+        $this->assertSame(2, Zone::where('layout_id', $layout->id)->count());
+    }
+
+    #[Test]
+    public function zone_overlap_stays_blocked_in_another_inamap_of_the_same_tenant(): void
+    {
+        [$user, $tenant] = $this->tenantUser('Tenant');
+        $this->makeLayout($this->makeInamap($tenant, ['settings' => ['allow_zone_overlap' => true]]));
+        $strict = $this->makeLayout($this->makeInamap($tenant, ['slug' => 'estricto']));
+
+        $this->actingAs($user)->postJson('/api/inamap/zones', [
+            'layout_id' => $strict->id, 'label' => 'A', 'polygon' => $this->square(0, 0, 10),
+        ])->assertCreated();
+        $this->actingAs($user)->postJson('/api/inamap/zones', [
+            'layout_id' => $strict->id, 'label' => 'C', 'polygon' => $this->square(5, 5, 10),
+        ])->assertUnprocessable();
+    }
+
+    #[Test]
     public function overlapping_structures_only_warn(): void
     {
         [$user, $tenant] = $this->tenantUser('Tenant');

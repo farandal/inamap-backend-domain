@@ -23,6 +23,7 @@ class InamapRequest extends BaseRequest
             'settings.initial_layout_id'   => 'sometimes|nullable|uuid',
             'settings.initial_zoom'        => 'sometimes|nullable|numeric|min:0.05|max:50',
             'settings.primary_color'       => 'sometimes|nullable|string|max:16',
+            'settings.allow_zone_overlap'  => 'sometimes|boolean',
         ];
     }
 }
