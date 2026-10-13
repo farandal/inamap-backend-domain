@@ -38,8 +38,8 @@ class PublicInamapController extends Controller
                 'access_mode', 'initial_layout_id', 'initial_zoom', 'primary_color',
             ])),
             'layouts'     => $inamap->layouts->map(fn ($l) => $l->only(['id', 'name', 'level', 'width', 'height', 'image_url']))->values(),
-            'zones'       => $inamap->zones->map(fn ($z) => $z->only(['id', 'layout_id', 'code', 'label', 'color', 'polygon']))->values(),
-            'structures'  => $inamap->structures->map(fn ($s) => $s->only(['id', 'layout_id', 'code', 'label', 'color', 'polygon']))->values(),
+            'zones'       => $inamap->zones->map(fn ($z) => $z->only(['id', 'layout_id', 'code', 'label', 'terms', 'color', 'polygon']))->values(),
+            'structures'  => $inamap->structures->map(fn ($s) => $s->only(['id', 'layout_id', 'code', 'label', 'terms', 'color', 'polygon']))->values(),
             'locations'   => LocationResource::collection($inamap->locations)->resolve($request),
             'categories'  => Category::query()
                 ->whereIn('id', $inamap->locations->pluck('category_id')->filter()->unique())
