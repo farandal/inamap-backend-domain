@@ -80,6 +80,7 @@ class PublicInamapController extends Controller
             'to'     => 'nullable|string|max:80',
             'layout' => 'nullable|uuid',
             'w'      => 'nullable|integer|min:' . MapRenderService::MIN_WIDTH . '|max:' . MapRenderService::MAX_WIDTH,
+            'places' => 'nullable|string|max:900',
             'lang'   => 'nullable|in:es,en',
             'qr'     => 'nullable|boolean',
         ]);
@@ -92,6 +93,8 @@ class PublicInamapController extends Controller
             'to'         => $request->query('to'),
             'layout'     => $request->query('layout'),
             'accessible' => $request->boolean('accessible'),
+            // "type:uuid,type:uuid": several places marked with numbers, no path.
+            'places'     => array_values(array_filter(array_map('trim', explode(',', (string) $request->query('places', ''))))),
             'width'      => (int) $request->query('w', 900),
             'lang'       => $request->query('lang', 'es'),
             // On unless asked off (qr=0): a picture shown on a kiosk is where the phone code is most useful.

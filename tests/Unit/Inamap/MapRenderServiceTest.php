@@ -141,5 +141,11 @@ class MapRenderServiceTest extends TestCase
         $this->assertSame($base . '?to=structure%3AT&lang=en', $this->call('phoneUrl', $base, 'structure:T', null, true, 'en'), 'no route, no accessible flag');
         $this->assertSame($base, $this->call('phoneUrl', $base, null, null, false, 'es'), 'a whole-venue picture links to the map');
         $this->assertSame($base . '?to=structure%3AT&from=location%3AK', $this->call('phoneUrl', $base, 'structure:T', 'location:K', false, 'es'), 'not accessible: no flag');
+
+        // A set of places: one link, type shortened to a letter, no path in it.
+        $this->assertSame(
+            $base . '?places=l%3AA%2Cs%3AB%2Cz%3AC',
+            $this->call('phoneUrl', $base, null, null, false, 'es', ['location:A', 'structure:B', 'zone:C']),
+        );
     }
 }
