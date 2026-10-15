@@ -35,6 +35,7 @@ class AppDomainServiceProvider extends AppServiceProvider
         $this->registerRateLimiters();
         $this->registerGraphInvalidation();
         $this->mergeDomainTenantSettings();
+        $this->registerPlanLimitFormats();
         $this->registerSchedule();
     }
 
@@ -71,6 +72,21 @@ class AppDomainServiceProvider extends AppServiceProvider
 
         foreach (['setting_formats', 'encrypted_setting_keys', 'attribute_formats'] as $key) {
             config(["tenants.{$key}" => array_merge(config("tenants.{$key}", []), $domain[$key] ?? [])]);
+        }
+    }
+
+    /**
+     * El formulario de límites del plan lo define el core (config 'subscription_plans.limit_formats')
+     * con los campos de KitchnTabs (productos, notificaciones push) y sin los de este dominio, así
+     * que el System admin no podía fijar max_inamaps. Aquí el dominio publica su propia lista.
+     * Reemplaza (no suma): un dominio solo ve sus propios límites.
+     */
+    private function registerPlanLimitFormats(): void
+    {
+        $formats = config('inamap.plan_limit_formats');
+
+        if (is_array($formats) && $formats !== []) {
+            config(['subscription_plans.limit_formats' => array_values($formats)]);
         }
     }
 
