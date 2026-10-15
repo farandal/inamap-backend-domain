@@ -120,7 +120,7 @@ return [
             'editable'      => true,
             'rules'         => 'nullable|integer|min:-1',
             'default_value' => null,
-            'description'   => 'Maximum number of inamaps (maps) the account can create. Leave empty, 0 or -1 for unlimited.',
+            'description'   => 'Maximum number of inamaps (maps) the account can create. Use 0 or -1 for unlimited. If left empty the default of 1 applies.',
         ],
         [
             'id'            => 'max_layouts_per_inamap',
@@ -134,7 +134,7 @@ return [
             'editable'      => true,
             'rules'         => 'nullable|integer|min:-1',
             'default_value' => null,
-            'description'   => 'Maximum number of layouts (floors / plans) in each inamap. Leave empty, 0 or -1 for unlimited.',
+            'description'   => 'Maximum number of layouts (floors / plans) in each inamap. Use 0 or -1 for unlimited (also the default when left empty).',
         ],
         [
             'id'            => 'max_locations',
@@ -148,7 +148,7 @@ return [
             'editable'      => true,
             'rules'         => 'nullable|integer|min:-1',
             'default_value' => null,
-            'description'   => 'Maximum number of locations (places) across the account. Leave empty, 0 or -1 for unlimited.',
+            'description'   => 'Maximum number of locations (places) across the account. Use 0 or -1 for unlimited (also the default when left empty).',
         ],
         [
             'id'            => 'max_active_route_sessions',
@@ -162,7 +162,7 @@ return [
             'editable'      => true,
             'rules'         => 'nullable|integer|min:-1',
             'default_value' => null,
-            'description'   => 'Maximum simultaneous active route sessions (QR routes) per tenant. Leave empty, 0 or -1 for unlimited.',
+            'description'   => 'Maximum simultaneous active route sessions (QR routes) per tenant. Use 0 or -1 for unlimited (also the default when left empty).',
         ],
     ],
 
