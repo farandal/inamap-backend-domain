@@ -76,17 +76,20 @@ class AppDomainServiceProvider extends AppServiceProvider
     }
 
     /**
-     * El formulario de límites del plan lo define el core (config 'subscription_plans.limit_formats')
-     * con los campos de KitchnTabs (productos, notificaciones push) y sin los de este dominio, así
-     * que el System admin no podía fijar max_inamaps. Aquí el dominio publica su propia lista.
-     * Reemplaza (no suma): un dominio solo ve sus propios límites.
+     * El formulario del plan lo define el core (config 'subscription_plans') con los campos de
+     * KitchnTabs: límites de productos y notificaciones push, y add-ons de marketplaces y puntos
+     * de venta. Faltaba además max_inamaps, así que el System admin no podía fijar cuántos mapas
+     * permite un plan. Aquí el dominio publica sus propias listas.
+     * Reemplazan (no suman): un dominio solo ve lo suyo; una lista vacía es válida (sin add-ons).
      */
     private function registerPlanLimitFormats(): void
     {
-        $formats = config('inamap.plan_limit_formats');
+        foreach (['limit_formats' => 'plan_limit_formats', 'addon_formats' => 'plan_addon_formats'] as $core => $own) {
+            $formats = config("inamap.{$own}");
 
-        if (is_array($formats) && $formats !== []) {
-            config(['subscription_plans.limit_formats' => array_values($formats)]);
+            if (is_array($formats)) {
+                config(["subscription_plans.{$core}" => array_values($formats)]);
+            }
         }
     }
 

@@ -166,6 +166,11 @@ return [
         ],
     ],
 
+    // Complementos (add-ons) del plan. El core ofrece marketplaces y puntos de venta (Jumpseller,
+    // Uber Eats, POS manual), que son de KitchnTabs: INAMAP no tiene ninguno, así que la lista
+    // queda vacía y la pestaña Add-ons del plan no ofrece nada que no exista aquí.
+    'plan_addon_formats' => [],
+
     // Throttle de la API pública (peticiones por minuto, por IP).
     'public_rate_limit' => (int) env('INAMAP_PUBLIC_RATE_LIMIT', 120),
     'session_rate_limit' => (int) env('INAMAP_SESSION_RATE_LIMIT', 20),

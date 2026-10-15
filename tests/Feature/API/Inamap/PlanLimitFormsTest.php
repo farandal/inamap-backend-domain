@@ -46,4 +46,13 @@ class PlanLimitFormsTest extends TestCase
 
         $this->assertSame([], array_values(array_diff(InamapPlanLimits::KEYS, $offered)));
     }
+
+    #[Test]
+    public function the_plan_form_offers_no_marketplace_or_point_of_sale_addons(): void
+    {
+        [$admin] = $this->tenantUser('System');
+
+        $this->actingAs($admin)->getJson('/api/system/subscription-plan/addonFormats')
+            ->assertOk()->assertJsonPath('data.formats', []);
+    }
 }
